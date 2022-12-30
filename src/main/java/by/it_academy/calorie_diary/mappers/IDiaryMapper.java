@@ -13,7 +13,6 @@ public interface IDiaryMapper {
     DiaryDTO convertToDTO(Diary diary);
 
     Diary convertToEntity(DiaryDTO diaryDTO);
-    //Diary convertToEntityFromDiaryRequestDTO(DiaryRequestDTO diaryRequestDTO);
 
     List<DiaryDTO> convertToList(List<Diary> diaries);
 }

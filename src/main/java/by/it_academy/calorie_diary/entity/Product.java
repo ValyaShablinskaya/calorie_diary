@@ -17,7 +17,6 @@ import java.util.UUID;
 @Table(name = "product")
 public class Product implements Serializable {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String title;
     private int calories;

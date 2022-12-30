@@ -4,8 +4,6 @@ import by.it_academy.calorie_diary.entity.Diary;
 import by.it_academy.calorie_diary.entity.Dish;
 import by.it_academy.calorie_diary.entity.Product;
 import by.it_academy.calorie_diary.mappers.IDiaryMapper;
-import by.it_academy.calorie_diary.mappers.IDishMapper;
-import by.it_academy.calorie_diary.mappers.IProductMapper;
 import by.it_academy.calorie_diary.repository.IDiaryRepository;
 import by.it_academy.calorie_diary.repository.IDishRepository;
 import by.it_academy.calorie_diary.repository.IProductRepository;
@@ -23,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @Service
@@ -32,19 +31,18 @@ public class DiaryService implements IDiaryService {
     private final IDishRepository dishRepository;
     private final IProductRepository productRepository;
     private final IDiaryMapper diaryMapper;
-    private final IProductMapper productMapper;
-    private final IDishMapper dishMapper;
-    private static final String ENTITY_NOT_FOUND_EXCEPTION = "Diary is not found";
+    private static final String DIARY_NOT_FOUND_EXCEPTION = "Diary is not found";
+    private static final String DISH_NOT_FOUND_EXCEPTION = "Dish is not found";
+    private static final String PRODUCT_NOT_FOUND_EXCEPTION = "Product is not found";
+    private static final String DIARY_ALREADY_EDITED_EXCEPTION = "Diary has been already edited";
+    private static final String DIARY_ALREADY_DELETED_EXCEPTION = "Diary has been already deleted";
 
     public DiaryService(IDiaryRepository repository, IDishRepository dishRepository,
-                        IProductRepository productRepository, IDiaryMapper diaryMapper,
-                        IProductMapper productMapper, IDishMapper dishMapper) {
+                        IProductRepository productRepository, IDiaryMapper diaryMapper) {
         this.repository = repository;
         this.dishRepository = dishRepository;
         this.productRepository = productRepository;
         this.diaryMapper = diaryMapper;
-        this.productMapper = productMapper;
-        this.dishMapper = dishMapper;
     }
 
     @Override
@@ -58,7 +56,7 @@ public class DiaryService implements IDiaryService {
 
     @Override
     public DiaryDTO read(UUID id) {
-        Diary diary = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+        Diary diary = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(DIARY_NOT_FOUND_EXCEPTION));
         return  diaryMapper.convertToDTO(diary);
     }
 
@@ -81,9 +79,9 @@ public class DiaryService implements IDiaryService {
     @Transactional
     public DiaryDTO update(DiaryRequestDTO item, UUID id, LocalDateTime updateData) {
         Diary read = repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+                () -> new EntityNotFoundException(DIARY_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("Diary has been already edited");
+            throw new IllegalArgumentException(DIARY_ALREADY_EDITED_EXCEPTION);
         }
         read.setDateUpdate(LocalDateTime.now());
         read.setDate(convertToDateTime(item));
@@ -106,9 +104,9 @@ public class DiaryService implements IDiaryService {
     @Transactional
     public void delete(UUID id, LocalDateTime updateData) {
         Diary diary = repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+                () -> new EntityNotFoundException(DIARY_NOT_FOUND_EXCEPTION));
         if (!diary.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("Diary has been already deleted");
+            throw new IllegalArgumentException(DIARY_ALREADY_DELETED_EXCEPTION);
         }
         repository.deleteById(id);
     }
@@ -131,15 +129,17 @@ public class DiaryService implements IDiaryService {
         diary.setDate(convertToDateTime(item));
         return diary;
     }
+
     private Dish findDishIsExist(DiaryRequestDTO item) {
         return dishRepository.findById(item.getDish().getId()).orElseThrow(() ->
-                new EntityNotFoundException("Dish is not found"));
+                new EntityNotFoundException(DISH_NOT_FOUND_EXCEPTION));
     }
 
     private Product findProductIsExist(DiaryRequestDTO item) {
         return productRepository.findById(item.getProduct().getId()).orElseThrow(() ->
-                new EntityNotFoundException("Product is not found"));
+                new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
     }
+
     private boolean isDishExist(DiaryRequestDTO item) {
         return Objects.nonNull(item.getDish());
     }
@@ -147,10 +147,10 @@ public class DiaryService implements IDiaryService {
     private boolean isProductExist(DiaryRequestDTO item) {
         return Objects.nonNull(item.getProduct());
     }
+
     private LocalDateTime convertToDateTime(DiaryRequestDTO item) {
         return LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(item.getDate()),
-                ZoneId.of("UTC")
-        );
+                TimeZone.getDefault().toZoneId());
     }
 }

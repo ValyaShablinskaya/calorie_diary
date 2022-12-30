@@ -20,7 +20,9 @@ import java.util.UUID;
 public class ProductService implements IProductService {
     private final IProductRepository repository;
     private final IProductMapper productMapper;
-    private static final String ENTITY_NOT_FOUND_EXCEPTION = "Product is not found";
+    private static final String PRODUCT_NOT_FOUND_EXCEPTION = "Product is not found";
+    private static final String PRODUCT_ALREADY_EDITED_EXCEPTION = "Product has been already edited";
+    private static final String PRODUCT_ALREADY_DELETED_EXCEPTION = "Product has been already deleted";
 
     public ProductService(IProductRepository repository, IProductMapper productMapper) {
         this.repository = repository;
@@ -47,7 +49,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDTO read(UUID id) {
-        Product product = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+        Product product = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
         return  productMapper.convertToDTO(product);
     }
 
@@ -69,11 +71,11 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public Product update(ProductDTO item, UUID id, LocalDateTime updateData) {
+    public ProductDTO update(ProductDTO item, UUID id, LocalDateTime updateData) {
         Product read = repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+                () -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("Product has been already edited");
+            throw new IllegalArgumentException(PRODUCT_ALREADY_EDITED_EXCEPTION);
         }
         read.setDateUpdate(LocalDateTime.now());
         read.setTitle(item.getTitle());
@@ -83,16 +85,18 @@ public class ProductService implements IProductService {
         read.setCarbohydrates(item.getCarbohydrates());
         read.setMeasureOfWeight(item.getMeasureOfWeight());
         read.setWeight(item.getWeight());
-        return repository.save(read);
+
+        read = repository.save(read);
+        return productMapper.convertToDTO(read);
     }
 
     @Override
     @Transactional
     public void delete(UUID id, LocalDateTime updateData) {
         Product product = repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+                () -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
         if (!product.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("Product has been already deleted");
+            throw new IllegalArgumentException(PRODUCT_ALREADY_DELETED_EXCEPTION);
         }
         repository.deleteById(id);
     }

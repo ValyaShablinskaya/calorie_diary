@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
@@ -13,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DishRequestDTO {
+    @NotBlank
     private String title;
+    @NotBlank
     private List<CompositionRequestDTO> compositions;
 }

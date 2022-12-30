@@ -12,6 +12,6 @@ public interface IProductService {
     ProductDTO create(ProductDTO item);
     ProductDTO read(UUID id);
     PageDTO<Product> get(Pageable pageable);
-    Product update(ProductDTO item, UUID id, LocalDateTime updateData);
+    ProductDTO update(ProductDTO item, UUID id, LocalDateTime updateData);
     void delete(UUID id, LocalDateTime updateData);
 }

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/journal/food")
+@RequestMapping("/api/v1/journal/food")
 public class DiaryController {
     private final IDiaryService service;
 
@@ -20,13 +20,13 @@ public class DiaryController {
     }
 
     @PostMapping
-    protected ResponseEntity<DiaryDTO> createDish(@RequestBody DiaryRequestDTO data) {
+    protected ResponseEntity<DiaryDTO> createDiary(@RequestBody DiaryRequestDTO data) {
         DiaryDTO created = this.service.create(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<Diary>> getList(Pageable pageable) {
+    protected ResponseEntity<PageDTO<Diary>> getListOfDiary(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 }

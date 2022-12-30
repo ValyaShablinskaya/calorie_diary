@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
@@ -66,12 +67,14 @@ private final IAuthenticationService authenticationService;
     protected ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
                                             @PathVariable("update_date") long updateTime,
                                             @RequestBody UserCreateDTO data) {
+
         LocalDateTime updateDate = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(updateTime),
-                ZoneId.of("UTC")
-        );
+                TimeZone.getDefault().toZoneId());
+
         return ResponseEntity.ok(this.service.update(data, id, updateDate));
     }
+
     @PostMapping("/login")
     public JwtResponseDTO authenticate(@RequestBody UserLoginDTO userLoginDTO) {
         return authenticationService.authenticate(userLoginDTO);

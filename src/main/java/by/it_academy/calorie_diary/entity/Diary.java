@@ -17,7 +17,6 @@ import java.util.UUID;
 @Table(name = "diary")
 public class Diary {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     @Enumerated(EnumType.STRING)
     @JoinColumn(name = "measure_of_weight")

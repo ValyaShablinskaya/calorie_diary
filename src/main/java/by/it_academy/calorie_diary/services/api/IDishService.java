@@ -13,6 +13,6 @@ public interface IDishService {
     DishDTO create(DishRequestDTO item);
     DishDTO read(UUID id);
     PageDTO<Dish> get(Pageable pageable);
-    Dish update(DishRequestDTO item, UUID id, LocalDateTime updateData);
+    DishDTO update(DishRequestDTO item, UUID id, LocalDateTime updateData);
     void delete(UUID id, LocalDateTime updateData);
 }

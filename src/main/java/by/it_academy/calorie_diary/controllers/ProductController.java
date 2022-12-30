@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/v1/product")
 public class ProductController {
     private final IProductService service;
 
@@ -35,18 +36,19 @@ public class ProductController {
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<Product>> getList(Pageable pageable) {
+    protected ResponseEntity<PageDTO<Product>> getListOfProduct(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 
     @PutMapping("/{id}/update_date/{update_date}")
-    protected ResponseEntity<Product> doPut(@PathVariable UUID id,
+    protected ResponseEntity<ProductDTO> updateProduct(@PathVariable UUID id,
                                          @PathVariable("update_date") long updateTime,
                                          @RequestBody ProductDTO data) {
+
         LocalDateTime updateDate = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(updateTime),
-                ZoneId.of("UTC")
-        );
+                TimeZone.getDefault().toZoneId());
+
         return ResponseEntity.ok(this.service.update(data, id, updateDate));
     }
 }

@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/recipe")
+@RequestMapping("/api/v1/recipe")
 public class DishController {
     private final IDishService service;
 
@@ -30,18 +31,19 @@ public class DishController {
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<Dish>> getList(Pageable pageable) {
+    protected ResponseEntity<PageDTO<Dish>> getListOfDish(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 
     @PutMapping("/{id}/update_date/{update_date}")
-    protected ResponseEntity<Dish> doPut(@PathVariable UUID id,
+    protected ResponseEntity<DishDTO> updateDish(@PathVariable UUID id,
                                             @PathVariable("update_date") long updateTime,
                                             @RequestBody DishRequestDTO data) {
+
         LocalDateTime updateDate = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(updateTime),
-                ZoneId.of("UTC")
-        );
+                TimeZone.getDefault().toZoneId());
+
         return ResponseEntity.ok(this.service.update(data, id, updateDate));
     }
 }

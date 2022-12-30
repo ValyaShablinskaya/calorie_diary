@@ -2,9 +2,7 @@ package by.it_academy.calorie_diary.services;
 
 import by.it_academy.calorie_diary.entity.Composition;
 import by.it_academy.calorie_diary.entity.Dish;
-import by.it_academy.calorie_diary.mappers.ICompositionMapper;
 import by.it_academy.calorie_diary.mappers.IDishMapper;
-import by.it_academy.calorie_diary.mappers.IProductMapper;
 import by.it_academy.calorie_diary.repository.IDishRepository;
 import by.it_academy.calorie_diary.repository.IProductRepository;
 import by.it_academy.calorie_diary.services.api.IDishService;
@@ -27,17 +25,14 @@ public class DishService implements IDishService {
     private final IDishRepository repository;
     private final IProductRepository productRepository;
     private final IDishMapper dishMapper;
-    private final ICompositionMapper compositionMapper;
-    private final IProductMapper productMapper;
     private static final String ENTITY_NOT_FOUND_EXCEPTION = "Dish is not found";
+    private static final String DISH_ALREADY_EDITED_EXCEPTION = "Dish has been already edited";
+    private static final String DISH_ALREADY_DELETED_EXCEPTION = "Dish has been already deleted";
 
-    public DishService(IDishRepository repository, IProductRepository productRepository, IDishMapper dishMapper,
-                       ICompositionMapper compositionMapper, IProductMapper productMapper) {
+    public DishService(IDishRepository repository, IProductRepository productRepository, IDishMapper dishMapper) {
         this.repository = repository;
         this.productRepository = productRepository;
         this.dishMapper = dishMapper;
-        this.compositionMapper = compositionMapper;
-        this.productMapper = productMapper;
     }
 
     @Override
@@ -82,11 +77,11 @@ public class DishService implements IDishService {
 
     @Override
     @Transactional
-    public Dish update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
+    public DishDTO update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
         Dish read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("Dish has been already edited");
+            throw new IllegalArgumentException(DISH_ALREADY_EDITED_EXCEPTION);
         }
         read.setDateUpdate(LocalDateTime.now());
         read.setTitle(item.getTitle());
@@ -98,7 +93,9 @@ public class DishService implements IDishService {
                                 productRepository.getById(i.getProduct().getId())))
                 .collect(Collectors.toList()));
 
-        return repository.save(read);
+        read = repository.save(read);
+
+        return dishMapper.convertToDTO(read);
     }
 
     @Override
@@ -107,7 +104,7 @@ public class DishService implements IDishService {
         Dish dish = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
         if (!dish.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("Dish has been already deleted");
+            throw new IllegalArgumentException(DISH_ALREADY_DELETED_EXCEPTION);
         }
         repository.deleteById(id);
     }

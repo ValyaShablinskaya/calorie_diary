@@ -20,7 +20,6 @@ import java.util.UUID;
 @Table(name = "dish")
 public class Dish implements Serializable {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String title;
     @ElementCollection(fetch = FetchType.EAGER)
