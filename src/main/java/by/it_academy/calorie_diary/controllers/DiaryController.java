@@ -1,9 +1,10 @@
 package by.it_academy.calorie_diary.controllers;
 
 import by.it_academy.calorie_diary.entity.Diary;
-import by.it_academy.calorie_diary.entity.Product;
 import by.it_academy.calorie_diary.services.api.IDiaryService;
 import by.it_academy.calorie_diary.services.dto.*;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryDTO;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryRequestDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,7 @@
 package by.it_academy.calorie_diary.mappers;
 
 import by.it_academy.calorie_diary.entity.Diary;
-import by.it_academy.calorie_diary.services.dto.DiaryDTO;
-import by.it_academy.calorie_diary.services.dto.DiaryRequestDTO;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryDTO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 

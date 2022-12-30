@@ -1,6 +1,7 @@
-package by.it_academy.calorie_diary.services.dto;
+package by.it_academy.calorie_diary.services.dto.composition;
 
 import by.it_academy.calorie_diary.entity.MeasureOfWeight;
+import by.it_academy.calorie_diary.services.dto.product.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompositionRequestDTO {
+public class CompositionDTO {
     private MeasureOfWeight measureOfWeight;
     private int weigh;
-    private ProductRequestDTO product;
+    private ProductDTO product;
 }

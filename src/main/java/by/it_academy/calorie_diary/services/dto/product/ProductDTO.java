@@ -1,4 +1,4 @@
-package by.it_academy.calorie_diary.services.dto;
+package by.it_academy.calorie_diary.services.dto.product;
 
 import by.it_academy.calorie_diary.entity.MeasureOfWeight;
 import lombok.AllArgsConstructor;
@@ -6,15 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DiaryDTO {
+public class ProductDTO {
+    private String title;
+    private int calories;
+    private double proteins;
+    private double fats;
+    private double carbohydrates;
     private MeasureOfWeight measureOfWeight;
     private int weight;
-    private LocalDateTime date;
-    private DishDTO dish;
-    private ProductDTO product;
 }

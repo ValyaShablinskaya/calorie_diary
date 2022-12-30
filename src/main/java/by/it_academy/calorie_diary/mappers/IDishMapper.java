@@ -1,11 +1,10 @@
 package by.it_academy.calorie_diary.mappers;
 
 import by.it_academy.calorie_diary.entity.Dish;
-import by.it_academy.calorie_diary.services.dto.DishDTO;
-import by.it_academy.calorie_diary.services.dto.DishRequestDTO;
+import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
+import by.it_academy.calorie_diary.services.dto.dish.DishRequestDTO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

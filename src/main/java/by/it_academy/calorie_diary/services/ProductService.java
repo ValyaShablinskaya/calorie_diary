@@ -5,7 +5,7 @@ import by.it_academy.calorie_diary.mappers.IProductMapper;
 import by.it_academy.calorie_diary.repository.IProductRepository;
 import by.it_academy.calorie_diary.services.api.IProductService;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
-import by.it_academy.calorie_diary.services.dto.ProductDTO;
+import by.it_academy.calorie_diary.services.dto.product.ProductDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public ProductDTO update(ProductDTO item, UUID id, LocalDateTime updateData) {
+    public Product update(ProductDTO item, UUID id, LocalDateTime updateData) {
         Product read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -83,8 +83,7 @@ public class ProductService implements IProductService {
         read.setCarbohydrates(item.getCarbohydrates());
         read.setMeasureOfWeight(item.getMeasureOfWeight());
         read.setWeight(item.getWeight());
-        read = repository.save(read);
-        return productMapper.convertToDTO(read);
+        return repository.save(read);
     }
 
     @Override

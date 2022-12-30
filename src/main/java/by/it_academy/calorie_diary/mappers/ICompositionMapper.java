@@ -1,10 +1,9 @@
 package by.it_academy.calorie_diary.mappers;
 
 import by.it_academy.calorie_diary.entity.Composition;
-import by.it_academy.calorie_diary.services.dto.CompositionDTO;
+import by.it_academy.calorie_diary.services.dto.composition.CompositionDTO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

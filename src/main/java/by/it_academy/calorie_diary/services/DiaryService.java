@@ -10,8 +10,8 @@ import by.it_academy.calorie_diary.repository.IDiaryRepository;
 import by.it_academy.calorie_diary.repository.IDishRepository;
 import by.it_academy.calorie_diary.repository.IProductRepository;
 import by.it_academy.calorie_diary.services.api.IDiaryService;
-import by.it_academy.calorie_diary.services.dto.DiaryDTO;
-import by.it_academy.calorie_diary.services.dto.DiaryRequestDTO;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryDTO;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryRequestDTO;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,6 @@ import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 

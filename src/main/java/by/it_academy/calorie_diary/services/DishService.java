@@ -2,15 +2,14 @@ package by.it_academy.calorie_diary.services;
 
 import by.it_academy.calorie_diary.entity.Composition;
 import by.it_academy.calorie_diary.entity.Dish;
-import by.it_academy.calorie_diary.entity.Product;
 import by.it_academy.calorie_diary.mappers.ICompositionMapper;
 import by.it_academy.calorie_diary.mappers.IDishMapper;
 import by.it_academy.calorie_diary.mappers.IProductMapper;
 import by.it_academy.calorie_diary.repository.IDishRepository;
 import by.it_academy.calorie_diary.repository.IProductRepository;
 import by.it_academy.calorie_diary.services.api.IDishService;
-import by.it_academy.calorie_diary.services.dto.DishDTO;
-import by.it_academy.calorie_diary.services.dto.DishRequestDTO;
+import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
+import by.it_academy.calorie_diary.services.dto.dish.DishRequestDTO;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -84,7 +82,7 @@ public class DishService implements IDishService {
 
     @Override
     @Transactional
-    public DishDTO update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
+    public Dish update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
         Dish read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -99,8 +97,8 @@ public class DishService implements IDishService {
                                 i.getWeigh(),
                                 productRepository.getById(i.getProduct().getId())))
                 .collect(Collectors.toList()));
-        read = repository.save(read);
-        return dishMapper.convertToDTO(read);
+
+        return repository.save(read);
     }
 
     @Override

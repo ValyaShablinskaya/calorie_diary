@@ -1,15 +1,19 @@
 package by.it_academy.calorie_diary.controllers;
 
 import by.it_academy.calorie_diary.entity.Dish;
-import by.it_academy.calorie_diary.entity.Product;
 import by.it_academy.calorie_diary.services.api.IDishService;
-import by.it_academy.calorie_diary.services.dto.DishDTO;
-import by.it_academy.calorie_diary.services.dto.DishRequestDTO;
+import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
+import by.it_academy.calorie_diary.services.dto.dish.DishRequestDTO;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/recipe")
@@ -28,5 +32,16 @@ public class DishController {
     @GetMapping
     protected ResponseEntity<PageDTO<Dish>> getList(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
+    }
+
+    @PutMapping("/{id}/update_date/{update_date}")
+    protected ResponseEntity<Dish> doPut(@PathVariable UUID id,
+                                            @PathVariable("update_date") long updateTime,
+                                            @RequestBody DishRequestDTO data) {
+        LocalDateTime updateDate = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(updateTime),
+                ZoneId.of("UTC")
+        );
+        return ResponseEntity.ok(this.service.update(data, id, updateDate));
     }
 }

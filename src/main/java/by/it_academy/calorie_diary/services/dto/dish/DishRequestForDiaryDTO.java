@@ -1,4 +1,4 @@
-package by.it_academy.calorie_diary.services.dto;
+package by.it_academy.calorie_diary.services.dto.dish;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

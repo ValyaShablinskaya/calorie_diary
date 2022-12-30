@@ -1,8 +1,8 @@
 package by.it_academy.calorie_diary.services.api;
 
 import by.it_academy.calorie_diary.entity.Diary;
-import by.it_academy.calorie_diary.services.dto.DiaryDTO;
-import by.it_academy.calorie_diary.services.dto.DiaryRequestDTO;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryDTO;
+import by.it_academy.calorie_diary.services.dto.diary.DiaryRequestDTO;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import org.springframework.data.domain.Pageable;
 

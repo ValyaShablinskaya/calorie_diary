@@ -1,6 +1,8 @@
-package by.it_academy.calorie_diary.services.dto;
+package by.it_academy.calorie_diary.services.dto.diary;
 
 import by.it_academy.calorie_diary.entity.MeasureOfWeight;
+import by.it_academy.calorie_diary.services.dto.dish.DishRequestForDiaryDTO;
+import by.it_academy.calorie_diary.services.dto.product.ProductRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

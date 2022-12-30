@@ -1,6 +1,7 @@
-package by.it_academy.calorie_diary.services.dto;
+package by.it_academy.calorie_diary.services.dto.dish;
 
 
+import by.it_academy.calorie_diary.services.dto.composition.CompositionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
