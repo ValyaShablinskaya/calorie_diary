@@ -29,8 +29,7 @@ public class UserService implements IUserService {
     private final IUserRepository repository;
     private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-
-    private static final String ENTITY_NOT_FOUND_EXCEPTION = "User is not found";
+    private static final String USER_NOT_FOUND_EXCEPTION = "User is not found";
     private static final String USER_ALREADY_EXISTS_EXCEPTION = "Specified user already exists";
 
     public UserService(IUserRepository repository, IUserMapper userMapper, PasswordEncoder passwordEncoder) {
@@ -87,7 +86,7 @@ public class UserService implements IUserService {
 
     @Override
     public UserDTO read(UUID id) {
-        User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+        User user = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
         return userMapper.convertToDTO(user);
     }
 
@@ -111,7 +110,7 @@ public class UserService implements IUserService {
     @Transactional
     public UserDTO update(UserCreateDTO item, UUID id, LocalDateTime updateData) {
         User read = repository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+                () -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
             throw new IllegalArgumentException("User has been already edited");
         }
@@ -128,7 +127,7 @@ public class UserService implements IUserService {
     @Override
     public UserDTO getInfoAboutUser(){
         String mail = findCurrentUser();
-        User user = repository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_EXCEPTION));
+        User user = repository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
         return userMapper.convertToDTO(user);
     }
 
@@ -136,8 +135,13 @@ public class UserService implements IUserService {
         return repository.findByMail(mail).isPresent();
     }
 
-    private String findCurrentUser() {
+    public String findCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
+    }
+
+    public User getCurrentUserByMail(String mail) {
+        return repository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
+
     }
 }

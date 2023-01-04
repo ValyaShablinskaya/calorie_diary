@@ -1,5 +1,7 @@
 package by.it_academy.calorie_diary.entity;
 
+import by.it_academy.calorie_diary.audit.AuditListener;
+import by.it_academy.calorie_diary.audit.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@EntityListeners(AuditListener.class)
+@Auditable(type = EssenceType.RECIPE)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -22,6 +26,9 @@ public class Dish implements Serializable {
     @Id
     private UUID id;
     private String title;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Composition> compositions = new ArrayList<>();
     @Column(name = "dt_create")

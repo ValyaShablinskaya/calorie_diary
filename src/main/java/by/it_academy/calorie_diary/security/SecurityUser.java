@@ -1,6 +1,7 @@
 package by.it_academy.calorie_diary.security;
 
 import by.it_academy.calorie_diary.entity.User;
+import by.it_academy.calorie_diary.entity.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,6 +62,10 @@ public class SecurityUser implements UserDetails {
         return new org.springframework.security.core.userdetails.User(
                 user.getMail(),
                 user.getPassword(),
+                user.getStatus().equals(UserStatus.ACTIVATED),
+                user.getStatus().equals(UserStatus.ACTIVATED),
+                user.getStatus().equals(UserStatus.ACTIVATED),
+                user.getStatus().equals(UserStatus.ACTIVATED),
                 Collections.singleton(user.getRole())
         );
     }

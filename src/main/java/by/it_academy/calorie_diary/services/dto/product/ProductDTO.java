@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -15,15 +16,16 @@ import javax.validation.constraints.NotBlank;
 public class ProductDTO {
     @NotBlank
     private String title;
+    @NotNull
     private int calories;
-    @NotBlank
+    @NotNull
     private double proteins;
-    @NotBlank
+    @NotNull
     private double fats;
-    @NotBlank
+    @NotNull
     private double carbohydrates;
     @NotBlank
     private MeasureOfWeight measureOfWeight;
-    @NotBlank
+    @NotNull
     private int weight;
 }

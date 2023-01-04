@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotBlank;
 public class CompositionRequestDTO {
     @NotBlank
     private MeasureOfWeight measureOfWeight;
-    @NotBlank
+    @NotNull
     private int weigh;
     @NotBlank
     private ProductRequestDTO product;

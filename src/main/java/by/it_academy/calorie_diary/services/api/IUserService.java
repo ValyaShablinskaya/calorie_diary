@@ -1,5 +1,6 @@
 package by.it_academy.calorie_diary.services.api;
 
+import by.it_academy.calorie_diary.entity.User;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import by.it_academy.calorie_diary.services.dto.user.UserCreateDTO;
 import by.it_academy.calorie_diary.services.dto.user.UserDTO;
@@ -16,4 +17,6 @@ public interface IUserService {
     PageDTO<UserDTO> get(Pageable pageable);
     UserDTO update(UserCreateDTO item, UUID id, LocalDateTime updateData);
     UserDTO getInfoAboutUser();
+    String findCurrentUser();
+    User getCurrentUserByMail(String mail);
 }

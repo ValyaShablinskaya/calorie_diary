@@ -16,6 +16,5 @@ import java.util.List;
 public class DishDTO {
     @NotBlank
     private String title;
-    @NotBlank
     private List<CompositionDTO> compositions;
 }
