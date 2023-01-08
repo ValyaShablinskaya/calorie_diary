@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 public interface IAuthenticationService {
     JwtResponseDTO authenticate(UserLoginDTO userLoginDTO);
 
-    JwtResponseDTO getAccessToken(String refreshToken);
-
-    JwtResponseDTO getRefreshToken(String refreshToken);
-
+    JwtResponseDTO recreateToken(String refreshToken);
     void logout(HttpServletRequest request, HttpServletResponse response);
 }

@@ -17,15 +17,15 @@ public class ProductDTO {
     @NotBlank
     private String title;
     @NotNull
-    private int calories;
+    private Integer calories;
     @NotNull
-    private double proteins;
+    private Double proteins;
     @NotNull
-    private double fats;
+    private Double fats;
     @NotNull
-    private double carbohydrates;
-    @NotBlank
+    private Double carbohydrates;
+    @NotNull
     private MeasureOfWeight measureOfWeight;
     @NotNull
-    private int weight;
+    private Integer weight;
 }

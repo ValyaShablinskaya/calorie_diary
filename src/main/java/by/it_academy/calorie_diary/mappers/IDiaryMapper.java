@@ -1,7 +1,9 @@
 package by.it_academy.calorie_diary.mappers;
 
 import by.it_academy.calorie_diary.entity.Diary;
+import by.it_academy.calorie_diary.entity.User;
 import by.it_academy.calorie_diary.services.dto.diary.DiaryDTO;
+import by.it_academy.calorie_diary.services.dto.user.UserDTO;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 
@@ -14,5 +16,5 @@ public interface IDiaryMapper {
 
     Diary convertToEntity(DiaryDTO diaryDTO);
 
-    List<DiaryDTO> convertToList(List<Diary> diaries);
+    List<DiaryDTO> convertToListDTO(List<Diary> diaries);
 }

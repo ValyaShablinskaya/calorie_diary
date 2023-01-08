@@ -36,8 +36,7 @@ public class AuditListener {
 
     private Audit createAudit(Object object, String text) {
         Audit audit = new Audit();
-        String mail = userService.findCurrentUser();
-        User user = userService.getCurrentUserByMail(mail);
+        User user = userService.findCurrentUser();
         audit.setUser(user);
         audit.setText(text);
         audit.setType(object.getClass().getAnnotation(Auditable.class).type());

@@ -1,12 +1,8 @@
 package by.it_academy.calorie_diary.services;
 
-import by.it_academy.calorie_diary.audit.Auditable;
-import by.it_academy.calorie_diary.entity.EssenceType;
 import by.it_academy.calorie_diary.entity.Product;
-import by.it_academy.calorie_diary.entity.User;
 import by.it_academy.calorie_diary.mappers.IProductMapper;
 import by.it_academy.calorie_diary.repository.IProductRepository;
-import by.it_academy.calorie_diary.repository.IUserRepository;
 import by.it_academy.calorie_diary.services.api.IProductService;
 import by.it_academy.calorie_diary.services.api.IUserService;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
@@ -26,19 +22,15 @@ import java.util.UUID;
 public class ProductService implements IProductService {
     private final IProductRepository repository;
     private final IProductMapper productMapper;
-    private final IUserRepository userRepository;
     private final IUserService userService;
     private static final String PRODUCT_NOT_FOUND_EXCEPTION = "Product is not found";
     private static final String PRODUCT_ALREADY_EDITED_EXCEPTION = "Product has been already edited";
     private static final String PRODUCT_ALREADY_DELETED_EXCEPTION = "Product has been already deleted";
-    private static final String USER_NOT_FOUND_EXCEPTION = "User is not found";
     private static final String ACCESS_USER_DENIED_EXCEPTION = "Current user can not update product";
 
-    public ProductService(IProductRepository repository, IProductMapper productMapper,
-                          IUserRepository userRepository, IUserService userService) {
+    public ProductService(IProductRepository repository, IProductMapper productMapper, IUserService userService) {
         this.repository = repository;
         this.productMapper = productMapper;
-        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -56,7 +48,7 @@ public class ProductService implements IProductService {
         product.setCarbohydrates(item.getCarbohydrates());
         product.setMeasureOfWeight(item.getMeasureOfWeight());
         product.setWeight(item.getWeight());
-        product.setUser(getCurrentUserByMail(userService.findCurrentUser()));
+        product.setUser(userService.findCurrentUser());
 
         product = repository.save(product);
         return productMapper.convertToDTO(product);
@@ -89,7 +81,7 @@ public class ProductService implements IProductService {
     public ProductDTO update(ProductDTO item, UUID id, LocalDateTime updateData) {
         Product read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
-        if (!read.getUser().equals(getCurrentUserByMail(userService.findCurrentUser()))) {
+        if (!read.getUser().equals(userService.findCurrentUser())) {
             throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
         }
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -104,7 +96,7 @@ public class ProductService implements IProductService {
         read.setCarbohydrates(item.getCarbohydrates());
         read.setMeasureOfWeight(item.getMeasureOfWeight());
         read.setWeight(item.getWeight());
-        read.setUser(getCurrentUserByMail(userService.findCurrentUser()));
+        read.setUser(userService.findCurrentUser());
 
         read = repository.save(read);
         return productMapper.convertToDTO(read);
@@ -119,10 +111,5 @@ public class ProductService implements IProductService {
             throw new IllegalArgumentException(PRODUCT_ALREADY_DELETED_EXCEPTION);
         }
         repository.deleteById(id);
-    }
-
-    private User getCurrentUserByMail(String mail) {
-        return userRepository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
-
     }
 }

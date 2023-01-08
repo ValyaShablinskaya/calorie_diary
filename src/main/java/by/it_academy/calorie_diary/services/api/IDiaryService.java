@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface IDiaryService {
-    DiaryDTO create(DiaryRequestDTO item);
+    DiaryDTO create(DiaryRequestDTO item, UUID uuid_profile);
     DiaryDTO read(UUID id);
-    PageDTO<Diary> get(Pageable pageable);
+    PageDTO<DiaryDTO> get(Pageable pageable, UUID uuid_profile);
     DiaryDTO update(DiaryRequestDTO item, UUID id, LocalDateTime updateData);
     void delete(UUID id, LocalDateTime updateData);
 }

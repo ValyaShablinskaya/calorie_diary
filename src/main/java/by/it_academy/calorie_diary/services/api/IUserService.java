@@ -17,6 +17,6 @@ public interface IUserService {
     PageDTO<UserDTO> get(Pageable pageable);
     UserDTO update(UserCreateDTO item, UUID id, LocalDateTime updateData);
     UserDTO getInfoAboutUser();
-    String findCurrentUser();
+    User findCurrentUser();
     User getCurrentUserByMail(String mail);
 }

@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -47,25 +50,11 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public JwtResponseDTO getAccessToken(String refreshToken) {
+    public JwtResponseDTO recreateToken(String refreshToken) {
         if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
             String email = jwtTokenProvider.getLoginFromRefreshToken(refreshToken);
             String savedRefreshToken = refreshStorage.get(email);
-            if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-                User user = getUserByMailIfExist(email);
-                String accessToken = jwtTokenProvider.generateAccessToken(user);
-                return new JwtResponseDTO(accessToken, null);
-            }
-        }
-        return new JwtResponseDTO(null, null);
-    }
-
-    @Override
-    public JwtResponseDTO getRefreshToken(String refreshToken) {
-        if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
-            String email = jwtTokenProvider.getLoginFromRefreshToken(refreshToken);
-            String savedRefreshToken = refreshStorage.get(email);
-            if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
+            if (Objects.nonNull(savedRefreshToken) && savedRefreshToken.equals(refreshToken)) {
                 User user = getUserByMailIfExist(email);
                 String accessToken = jwtTokenProvider.generateAccessToken(user);
                 String newRefreshToken = jwtTokenProvider.generateRefreshToken(user);
@@ -78,8 +67,10 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler contextLogoutHandler = new SecurityContextLogoutHandler();
-        contextLogoutHandler.logout(request, response, null);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (Objects.nonNull(authentication)) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
     }
 
     private User getUserByMailIfExist(String mail) {

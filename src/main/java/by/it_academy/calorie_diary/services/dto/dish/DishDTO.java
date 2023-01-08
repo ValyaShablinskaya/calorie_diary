@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DishDTO {
-    @NotBlank
     private String title;
     private List<CompositionDTO> compositions;
 }

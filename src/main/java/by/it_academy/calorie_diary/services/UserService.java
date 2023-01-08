@@ -30,6 +30,7 @@ public class UserService implements IUserService {
     private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private static final String USER_NOT_FOUND_EXCEPTION = "User is not found";
+    private static final String USER_ALREADY_EDITED_EXCEPTION = "User has been already edited";
     private static final String USER_ALREADY_EXISTS_EXCEPTION = "Specified user already exists";
 
     public UserService(IUserRepository repository, IUserMapper userMapper, PasswordEncoder passwordEncoder) {
@@ -112,7 +113,7 @@ public class UserService implements IUserService {
         User read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
-            throw new IllegalArgumentException("User has been already edited");
+            throw new IllegalArgumentException(USER_ALREADY_EDITED_EXCEPTION);
         }
         read.setDateUpdate(LocalDateTime.now());
         read.setMail(item.getMail());
@@ -126,8 +127,7 @@ public class UserService implements IUserService {
     }
     @Override
     public UserDTO getInfoAboutUser(){
-        String mail = findCurrentUser();
-        User user = repository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
+        User user = findCurrentUser();
         return userMapper.convertToDTO(user);
     }
 
@@ -135,9 +135,9 @@ public class UserService implements IUserService {
         return repository.findByMail(mail).isPresent();
     }
 
-    public String findCurrentUser() {
+    public User findCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        return getCurrentUserByMail(authentication.getName());
     }
 
     public User getCurrentUserByMail(String mail) {

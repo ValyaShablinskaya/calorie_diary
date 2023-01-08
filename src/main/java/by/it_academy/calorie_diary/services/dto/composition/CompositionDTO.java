@@ -15,10 +15,10 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompositionDTO {
-    @NotBlank
+    @NotNull
     private MeasureOfWeight measureOfWeight;
     @NotNull
-    private int weigh;
-    @NotBlank
+    private Integer weigh;
+    @NotNull
     private ProductDTO product;
 }

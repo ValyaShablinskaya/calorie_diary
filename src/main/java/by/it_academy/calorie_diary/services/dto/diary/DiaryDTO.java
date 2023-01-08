@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DiaryDTO {
     private MeasureOfWeight measureOfWeight;
-    private int weight;
+    private Integer weight;
     private LocalDateTime date;
     private DishDTO dish;
     private ProductDTO product;

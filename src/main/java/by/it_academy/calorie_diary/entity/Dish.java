@@ -2,10 +2,8 @@ package by.it_academy.calorie_diary.entity;
 
 import by.it_academy.calorie_diary.audit.AuditListener;
 import by.it_academy.calorie_diary.audit.Auditable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OptimisticLock;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,7 +27,10 @@ public class Dish implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
+    @OptimisticLock(excluded = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Composition> compositions = new ArrayList<>();
     @Column(name = "dt_create")
     private LocalDateTime dateCrete;

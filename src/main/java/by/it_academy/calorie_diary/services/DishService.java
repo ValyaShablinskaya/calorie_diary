@@ -2,11 +2,9 @@ package by.it_academy.calorie_diary.services;
 
 import by.it_academy.calorie_diary.entity.Composition;
 import by.it_academy.calorie_diary.entity.Dish;
-import by.it_academy.calorie_diary.entity.User;
 import by.it_academy.calorie_diary.mappers.IDishMapper;
 import by.it_academy.calorie_diary.repository.IDishRepository;
 import by.it_academy.calorie_diary.repository.IProductRepository;
-import by.it_academy.calorie_diary.repository.IUserRepository;
 import by.it_academy.calorie_diary.services.api.IDishService;
 import by.it_academy.calorie_diary.services.api.IUserService;
 import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
@@ -30,20 +28,16 @@ public class DishService implements IDishService {
     private final IProductRepository productRepository;
     private final IDishMapper dishMapper;
     private final IUserService userService;
-    private final IUserRepository userRepository;
     private static final String DISH_NOT_FOUND_EXCEPTION = "Dish is not found";
     private static final String DISH_ALREADY_EDITED_EXCEPTION = "Dish has been already edited";
     private static final String DISH_ALREADY_DELETED_EXCEPTION = "Dish has been already deleted";
-    private static final String USER_NOT_FOUND_EXCEPTION = "User is not found";
     private static final String ACCESS_USER_DENIED_EXCEPTION = "Current user can not update dish";
 
-    public DishService(IDishRepository repository, IProductRepository productRepository,
-                       IDishMapper dishMapper, IUserService userService, IUserRepository userRepository) {
+    public DishService(IDishRepository repository, IProductRepository productRepository, IDishMapper dishMapper, IUserService userService) {
         this.repository = repository;
         this.productRepository = productRepository;
         this.dishMapper = dishMapper;
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -54,7 +48,7 @@ public class DishService implements IDishService {
         dish.setDateCrete(LocalDateTime.now());
         dish.setDateUpdate(dish.getDateCrete());
         dish.setTitle(item.getTitle());
-        dish.setUser(getCurrentUserByMail(userService.findCurrentUser()));
+        dish.setUser(userService.findCurrentUser());
         dish.setCompositions(item.getCompositions().stream()
                 .map(i ->
                         new Composition(
@@ -92,7 +86,7 @@ public class DishService implements IDishService {
     public DishDTO update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
         Dish read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(DISH_NOT_FOUND_EXCEPTION));
-        if (!read.getUser().equals(getCurrentUserByMail(userService.findCurrentUser()))) {
+        if (!read.getUser().equals(userService.findCurrentUser())) {
             throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
         }
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -108,7 +102,7 @@ public class DishService implements IDishService {
                                 i.getWeigh(),
                                 productRepository.getById(i.getProduct().getId())))
                 .collect(Collectors.toList()));
-        read.setUser(getCurrentUserByMail(userService.findCurrentUser()));
+        read.setUser(userService.findCurrentUser());
 
         read = repository.save(read);
 
@@ -124,10 +118,5 @@ public class DishService implements IDishService {
             throw new IllegalArgumentException(DISH_ALREADY_DELETED_EXCEPTION);
         }
         repository.deleteById(id);
-    }
-
-    private User getCurrentUserByMail(String mail) {
-        return userRepository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
-
     }
 }

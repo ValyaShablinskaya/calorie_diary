@@ -7,14 +7,17 @@ import by.it_academy.calorie_diary.services.dto.product.ProductDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
+@Validated
 @RequestMapping("/api/v1/product")
 public class ProductController {
     private final IProductService service;
@@ -24,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping
-    protected ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO data) {
+    protected ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO data) {
         ProductDTO created = this.service.create(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -40,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/update_date/{update_date}")
-    protected ResponseEntity<ProductDTO> updateProduct(@PathVariable UUID id,
+    protected ResponseEntity<ProductDTO> updateProduct(@Valid @PathVariable UUID id,
                                          @PathVariable("update_date") long updateTime,
                                          @RequestBody ProductDTO data) {
 

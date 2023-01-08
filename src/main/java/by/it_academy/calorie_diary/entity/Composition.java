@@ -17,7 +17,7 @@ public class Composition implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "measure_of_weight")
     private MeasureOfWeight measureOfWeight;
-    private int weigh;
+    private Integer weigh;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

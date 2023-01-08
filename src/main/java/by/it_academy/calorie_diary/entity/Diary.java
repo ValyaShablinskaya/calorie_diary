@@ -25,7 +25,7 @@ public class Diary {
     @Enumerated(EnumType.STRING)
     @JoinColumn(name = "measure_of_weight")
     private MeasureOfWeight measureOfWeight;
-    private int weight;
+    private Integer weight;
     private LocalDateTime date;
     @ManyToOne
     @JoinColumn(name = "dish_id")
@@ -33,6 +33,9 @@ public class Diary {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
     @Column(name = "dt_create")
     private LocalDateTime dateCrete;
     @Version

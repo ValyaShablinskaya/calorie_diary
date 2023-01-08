@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -81,13 +80,8 @@ private final IAuthenticationService authenticationService;
     }
 
     @PostMapping("/token/access")
-    public JwtResponseDTO getNewAccessToken(@RequestBody RefreshJwtRequestDTO refreshJwtDto) {
-        return authenticationService.getAccessToken(refreshJwtDto.getRefreshToken());
-    }
-
-    @PostMapping("/token/refresh")
-    public JwtResponseDTO getNewRefreshToken(@RequestBody RefreshJwtRequestDTO refreshJwtDto) {
-        return authenticationService.getRefreshToken(refreshJwtDto.getRefreshToken());
+    public JwtResponseDTO getNewAccessToken(@Valid @RequestBody RefreshJwtRequestDTO refreshJwtDto) {
+        return authenticationService.recreateToken(refreshJwtDto.getRefreshToken());
     }
 
     @PostMapping("/logout")

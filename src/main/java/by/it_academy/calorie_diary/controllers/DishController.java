@@ -10,13 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
+@Valid
 @RequestMapping("/api/v1/recipe")
 public class DishController {
     private final IDishService service;
@@ -24,8 +25,9 @@ public class DishController {
     public DishController(IDishService service) {
         this.service = service;
     }
+
     @PostMapping
-    protected ResponseEntity<DishDTO> createDish(@RequestBody DishRequestDTO data) {
+    protected ResponseEntity<DishDTO> createDish(@Valid @RequestBody DishRequestDTO data) {
         DishDTO created = this.service.create(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -36,7 +38,7 @@ public class DishController {
     }
 
     @PutMapping("/{id}/update_date/{update_date}")
-    protected ResponseEntity<DishDTO> updateDish(@PathVariable UUID id,
+    protected ResponseEntity<DishDTO> updateDish(@Valid @PathVariable UUID id,
                                             @PathVariable("update_date") long updateTime,
                                             @RequestBody DishRequestDTO data) {
 

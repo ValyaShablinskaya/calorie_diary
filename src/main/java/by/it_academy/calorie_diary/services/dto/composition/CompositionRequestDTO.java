@@ -18,7 +18,7 @@ public class CompositionRequestDTO {
     @NotBlank
     private MeasureOfWeight measureOfWeight;
     @NotNull
-    private int weigh;
-    @NotBlank
+    private Integer weigh;
+    @NotNull
     private ProductRequestDTO product;
 }

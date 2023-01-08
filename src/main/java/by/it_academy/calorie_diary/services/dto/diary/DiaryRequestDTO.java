@@ -8,14 +8,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiaryRequestDTO {
+    @NotNull
     private MeasureOfWeight measureOfWeight;
-    private int weight;
-    private int date;
+    @NotNull
+    private Integer weight;
+    private Integer date;
     private DishRequestForDiaryDTO dish;
     private ProductRequestDTO product;
 }

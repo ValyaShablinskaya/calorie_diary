@@ -1,7 +1,5 @@
 package by.it_academy.calorie_diary.entity;
 
-import by.it_academy.calorie_diary.audit.AuditListener;
-import by.it_academy.calorie_diary.audit.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,27 +7,29 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 @Data
-@EntityListeners(AuditListener.class)
-@Auditable(type = EssenceType.PRODUCT)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "product")
-public class Product implements Serializable {
+@Table(name = "profile")
+public class Profile implements Serializable {
     @Id
     private UUID id;
-    private String title;
-    private Integer calories;
-    private Double proteins;
-    private Double fats;
-    private Double carbohydrates;
+    private Integer height;
+    private Double weight;
+    @Column(name = "dt_birthday")
+    private LocalDate dateBirthday;
+    private Double target;
     @Enumerated(EnumType.STRING)
-    private MeasureOfWeight measureOfWeight;
-    private Integer weight;
+    @Column(name = "activity_type")
+    private ActivityType activityType;
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
