@@ -1,5 +1,7 @@
 package by.it_academy.calorie_diary.configuration;
 
+import by.it_academy.calorie_diary.security.JwtAccessDeniedHandler;
+import by.it_academy.calorie_diary.security.JwtAuthenticationEntryPoint;
 import by.it_academy.calorie_diary.security.jwt.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +22,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final JwtTokenFilter jwtFilter;
 
-    public SecurityConfiguration(JwtTokenFilter jwtFilter) {
+    private final JwtAuthenticationEntryPoint jwtEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    public SecurityConfiguration(JwtTokenFilter jwtFilter, JwtAuthenticationEntryPoint jwtEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.jwtFilter = jwtFilter;
+        this.jwtEntryPoint = jwtEntryPoint;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -30,11 +38,15 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/registration", "/api/v1/users/login", "/api/v1/users/verify").access("permitAll()")
+                .antMatchers("/api/v1/users/registration", "/api/v1/users/login", "/api/v1/users/verify", "/api/v1/users/token/access").access("permitAll()")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .and()
                 .build();
     }
 

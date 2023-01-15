@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -39,9 +40,9 @@ private final IAuthenticationService authenticationService;
     }
 
     @PostMapping("registration")
-    protected ResponseEntity<UserDTO> registrationUser(@Valid @RequestBody UserRegistrationDTO data) {
-        UserDTO created = this.service.registrationUser(data);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    protected ResponseEntity<Map<String, String>> registrationUser(@Valid @RequestBody UserRegistrationDTO data) {
+        this.service.registrationUser(data);
+        return ResponseEntity.ok(Map.of("message", "Registration successful. Check your email"));
     }
 
     @ResponseStatus(HttpStatus.OK)

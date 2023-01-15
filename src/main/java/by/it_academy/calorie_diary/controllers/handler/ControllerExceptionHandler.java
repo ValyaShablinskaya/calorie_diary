@@ -1,19 +1,23 @@
 package by.it_academy.calorie_diary.controllers.handler;
 
+import by.it_academy.calorie_diary.security.exception.JwtAuthenticationException;
 import by.it_academy.calorie_diary.services.dto.ResponseError;
 import by.it_academy.calorie_diary.services.exception.AccessIsDeniedException;
 import by.it_academy.calorie_diary.services.exception.UserAuthenticationProcessingException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
-public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
+public class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityNotFoundException.class)
@@ -24,6 +28,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseError handleEIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseError handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         return new ResponseError(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
     }
 
@@ -49,5 +59,23 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserAuthenticationProcessingException.class)
     public ResponseError handleUserAuthenticationProcessingException(UserAuthenticationProcessingException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED.toString(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseError handleJwtAuthenticationException(JwtAuthenticationException e) {
+        return new ResponseError(HttpStatus.UNAUTHORIZED.toString(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseError handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+        return new ResponseError(HttpStatus.FORBIDDEN.toString(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseError handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return new ResponseError(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
     }
 }

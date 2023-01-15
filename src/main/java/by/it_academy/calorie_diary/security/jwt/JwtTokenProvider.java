@@ -1,15 +1,12 @@
 package by.it_academy.calorie_diary.security.jwt;
 
 import by.it_academy.calorie_diary.entity.User;
-import by.it_academy.calorie_diary.security.exception.JwtAuthenticationException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +21,7 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
@@ -42,7 +40,7 @@ public class JwtTokenProvider {
         claims.put("role", user.getRole());
 
         LocalDateTime now = LocalDateTime.now();
-        Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
+        Instant accessExpirationInstant = now.plusMinutes(3).atZone(ZoneId.systemDefault()).toInstant();
         Date accessExpiration = Date.from(accessExpirationInstant);
 
         return Jwts.builder()
@@ -102,9 +100,18 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("Jwt token is expired or invalid", HttpStatus.UNAUTHORIZED);
-        }
+        } catch (ExpiredJwtException expEx) {
+        log.error("Token expired", expEx);
+        } catch (UnsupportedJwtException unsEx) {
+        log.error("Unsupported jwt", unsEx);
+        } catch (MalformedJwtException mjEx) {
+        log.error("Malformed jwt", mjEx);
+        } catch (SignatureException sEx) {
+        log.error("Invalid signature", sEx);
+        } catch (Exception e) {
+        log.error("invalid token", e);
+    }
+        return false;
     }
 
     private Claims getClaims(String token, Key secret) {
