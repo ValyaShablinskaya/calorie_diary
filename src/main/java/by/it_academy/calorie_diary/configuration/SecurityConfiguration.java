@@ -3,8 +3,6 @@ package by.it_academy.calorie_diary.configuration;
 import by.it_academy.calorie_diary.security.jwt.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -32,7 +30,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/registration", "/api/v1/users/login").access("permitAll()")
+                .antMatchers("/api/v1/users/registration", "/api/v1/users/login", "/api/v1/users/verify").access("permitAll()")
                 .anyRequest()
                 .authenticated()
                 .and()

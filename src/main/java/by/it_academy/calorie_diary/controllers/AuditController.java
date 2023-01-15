@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,8 +25,8 @@ public class AuditController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    protected ResponseEntity<List<AuditDTO>> getAuditByUserId(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.readByUserId(id));
+    protected ResponseEntity<AuditDTO> getByIdAudit(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.read(id));
     }
 
     @GetMapping

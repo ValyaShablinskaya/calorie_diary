@@ -1,7 +1,7 @@
 package by.it_academy.calorie_diary.entity;
 
 import by.it_academy.calorie_diary.audit.AuditListener;
-import by.it_academy.calorie_diary.audit.Auditable;
+import by.it_academy.calorie_diary.audit.AuditableForType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 @Data
 @EntityListeners(AuditListener.class)
-@Auditable(type = EssenceType.PRODUCT)
+@AuditableForType(type = EssenceType.PRODUCT)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

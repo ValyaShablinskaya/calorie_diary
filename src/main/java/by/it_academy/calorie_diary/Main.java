@@ -6,7 +6,7 @@ import java.util.TimeZone;
 
 public class Main {
     public static void main(String[] args) {
-        LocalDateTime localDateTime = LocalDateTime.of(2023, Month.JANUARY, 3, 19, 30, 13, 830000000);
+        LocalDateTime localDateTime = LocalDateTime.of(2023, Month.JANUARY, 12, 22, 40, 36, 554000000);
         System.out.println(localDateTime);
 
         ZonedDateTime zdt = ZonedDateTime.of(localDateTime, ZoneId.systemDefault());

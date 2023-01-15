@@ -44,6 +44,12 @@ private final IAuthenticationService authenticationService;
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/verify")
+    public void verifyUserAccount(@RequestParam(value = "token") String token) {
+        service.verifyUserAccount(token);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     protected ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {

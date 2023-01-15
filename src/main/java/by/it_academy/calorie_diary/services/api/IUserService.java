@@ -19,4 +19,6 @@ public interface IUserService {
     UserDTO getInfoAboutUser();
     User findCurrentUser();
     User getCurrentUserByMail(String mail);
+    void verifyUserAccount(String token);
+    User findUserByVerificationToken(String token);
 }

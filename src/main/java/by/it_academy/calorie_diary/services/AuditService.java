@@ -1,6 +1,6 @@
 package by.it_academy.calorie_diary.services;
 
-import by.it_academy.calorie_diary.entity.Audit;
+import by.it_academy.calorie_diary.entity.*;
 import by.it_academy.calorie_diary.mappers.IAuditMapper;
 import by.it_academy.calorie_diary.repository.IAuditRepository;
 import by.it_academy.calorie_diary.services.api.IAuditService;
@@ -9,11 +9,13 @@ import by.it_academy.calorie_diary.services.dto.audit.AuditDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import java.util.UUID;
 
 @Service
+@Transactional(readOnly = true)
 public class AuditService implements IAuditService {
     private final IAuditRepository auditRepository;
     private final IAuditMapper auditMapper;
@@ -25,15 +27,16 @@ public class AuditService implements IAuditService {
     }
 
     @Override
+    @Transactional
     public Audit create(Audit item) {
         item.setId(UUID.randomUUID());
         return auditRepository.save(item);
     }
 
     @Override
-    public List<AuditDTO> readByUserId(UUID userId) {
-        List<Audit> audit = auditRepository.findByUserId(userId);
-        return auditMapper.convertToListDTO(audit);
+    public AuditDTO read(UUID id) {
+        Audit audit = auditRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(AUDIT_NOT_FOUND_EXCEPTION));
+        return auditMapper.convertToDTO(audit);
     }
 
     @Override

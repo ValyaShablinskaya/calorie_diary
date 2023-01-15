@@ -67,9 +67,9 @@ public class DishService implements IDishService {
     }
 
     @Override
-    public PageDTO<Dish> get(Pageable pageable) {
+    public PageDTO<DishDTO> get(Pageable pageable) {
         Page<Dish> content = repository.findAll(pageable);
-        PageDTO<Dish> pageDTO = new PageDTO();
+        PageDTO<DishDTO> pageDTO = new PageDTO();
         pageDTO.setNumber(content.getNumber());
         pageDTO.setSize(content.getSize());
         pageDTO.setTotalPages(content.getTotalPages());
@@ -77,7 +77,7 @@ public class DishService implements IDishService {
         pageDTO.setFirst(content.isFirst());
         pageDTO.setNumberOfElements(content.getNumberOfElements());
         pageDTO.setLast(content.isLast());
-        pageDTO.setContent(content.getContent());
+        pageDTO.setContent(dishMapper.convertToList(content.getContent()));
         return pageDTO;
     }
 
@@ -86,9 +86,6 @@ public class DishService implements IDishService {
     public DishDTO update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
         Dish read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(DISH_NOT_FOUND_EXCEPTION));
-        if (!read.getUser().equals(userService.findCurrentUser())) {
-            throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
-        }
         if (!read.getDateUpdate().isEqual(updateData)) {
             throw new IllegalArgumentException(DISH_ALREADY_EDITED_EXCEPTION);
         }
@@ -102,7 +99,6 @@ public class DishService implements IDishService {
                                 i.getWeigh(),
                                 productRepository.getById(i.getProduct().getId())))
                 .collect(Collectors.toList()));
-        read.setUser(userService.findCurrentUser());
 
         read = repository.save(read);
 

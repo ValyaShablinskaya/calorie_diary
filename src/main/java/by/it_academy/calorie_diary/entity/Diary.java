@@ -1,25 +1,26 @@
 package by.it_academy.calorie_diary.entity;
 
 import by.it_academy.calorie_diary.audit.AuditListener;
-import by.it_academy.calorie_diary.audit.Auditable;
+import by.it_academy.calorie_diary.audit.AuditableForType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @EntityListeners(AuditListener.class)
-@Auditable(type = EssenceType.JOURNAL_FOOD)
+@AuditableForType(type = EssenceType.JOURNAL_FOOD)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "diary")
-public class Diary {
+public class Diary implements Serializable {
     @Id
     private UUID id;
     @Enumerated(EnumType.STRING)

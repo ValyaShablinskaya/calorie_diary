@@ -1,6 +1,5 @@
 package by.it_academy.calorie_diary.controllers;
 
-import by.it_academy.calorie_diary.entity.Dish;
 import by.it_academy.calorie_diary.services.api.IDishService;
 import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
 import by.it_academy.calorie_diary.services.dto.dish.DishRequestDTO;
@@ -33,7 +32,7 @@ public class DishController {
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<Dish>> getListOfDish(Pageable pageable) {
+    protected ResponseEntity<PageDTO<DishDTO>> getListOfDish(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 

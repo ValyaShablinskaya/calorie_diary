@@ -1,7 +1,7 @@
 package by.it_academy.calorie_diary.entity;
 
 import by.it_academy.calorie_diary.audit.AuditListener;
-import by.it_academy.calorie_diary.audit.Auditable;
+import by.it_academy.calorie_diary.audit.AuditableForType;
 import lombok.*;
 import org.hibernate.annotations.OptimisticLock;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Data
 @EntityListeners(AuditListener.class)
-@Auditable(type = EssenceType.RECIPE)
+@AuditableForType(type = EssenceType.RECIPE)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

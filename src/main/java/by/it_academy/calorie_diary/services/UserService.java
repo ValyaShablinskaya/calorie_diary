@@ -3,9 +3,12 @@ package by.it_academy.calorie_diary.services;
 import by.it_academy.calorie_diary.entity.User;
 import by.it_academy.calorie_diary.entity.UserRole;
 import by.it_academy.calorie_diary.entity.UserStatus;
+import by.it_academy.calorie_diary.entity.VerificationToken;
 import by.it_academy.calorie_diary.mappers.IUserMapper;
 import by.it_academy.calorie_diary.repository.IUserRepository;
+import by.it_academy.calorie_diary.services.api.IEmailService;
 import by.it_academy.calorie_diary.services.api.IUserService;
+import by.it_academy.calorie_diary.services.api.IVerificationTokenService;
 import by.it_academy.calorie_diary.services.dto.*;
 import by.it_academy.calorie_diary.services.dto.user.UserCreateDTO;
 import by.it_academy.calorie_diary.services.dto.user.UserDTO;
@@ -29,14 +32,19 @@ public class UserService implements IUserService {
     private final IUserRepository repository;
     private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final IVerificationTokenService verificationTokenService;
+    private final IEmailService emailService;
     private static final String USER_NOT_FOUND_EXCEPTION = "User is not found";
     private static final String USER_ALREADY_EDITED_EXCEPTION = "User has been already edited";
     private static final String USER_ALREADY_EXISTS_EXCEPTION = "Specified user already exists";
 
-    public UserService(IUserRepository repository, IUserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(IUserRepository repository, IUserMapper userMapper, PasswordEncoder passwordEncoder,
+                       IVerificationTokenService verificationTokenService, IEmailService emailService) {
         this.repository = repository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.verificationTokenService = verificationTokenService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -74,15 +82,27 @@ public class UserService implements IUserService {
         user.setId(UUID.randomUUID());
         user.setDateCrete(LocalDateTime.now());
         user.setDateUpdate(user.getDateCrete());
-
         user.setMail(item.getMail());
         user.setNick(item.getNick());
         user.setPassword(passwordEncoder.encode(item.getPassword()));
         user.setRole(UserRole.USER);
-        user.setStatus(UserStatus.ACTIVATED);
+        user.setStatus(UserStatus.WAITING_ACTIVATION);
         user = repository.save(user);
 
+        VerificationToken verificationToken = verificationTokenService.saveToken(user);
+        emailService.sendRegistrationConfirmationEmail(user.getMail(), verificationToken.getToken());
+
         return userMapper.convertToDTO(user);
+    }
+
+    @Override
+    @Transactional
+    public void verifyUserAccount(String token) {
+        verificationTokenService.validateVerificationToken(token);
+        User user = findUserByVerificationToken(token);
+        user.setStatus(UserStatus.ACTIVATED);
+        repository.save(user);
+        verificationTokenService.removeToken(token);
     }
 
     @Override
@@ -143,5 +163,11 @@ public class UserService implements IUserService {
     public User getCurrentUserByMail(String mail) {
         return repository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
 
+    }
+
+    @Override
+    public User findUserByVerificationToken(String token) {
+        return repository.findUserByToken(token).orElseThrow(() ->
+                new EntityNotFoundException(USER_NOT_FOUND_EXCEPTION));
     }
 }

@@ -4,6 +4,7 @@ import by.it_academy.calorie_diary.services.dto.ResponseError;
 import by.it_academy.calorie_diary.services.exception.AccessIsDeniedException;
 import by.it_academy.calorie_diary.services.exception.UserAuthenticationProcessingException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +33,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseError(HttpStatus.FORBIDDEN.toString(), e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseError handleAccessIsDeniedException(AccessDeniedException e) {
+        return new ResponseError(HttpStatus.FORBIDDEN.toString(), e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityExistsException.class)
     public ResponseError handleEntityExistsException(EntityExistsException e) {
@@ -43,5 +50,4 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseError handleUserAuthenticationProcessingException(UserAuthenticationProcessingException e) {
         return new ResponseError(HttpStatus.UNAUTHORIZED.toString(), e.getMessage());
     }
-
 }

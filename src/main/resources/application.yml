@@ -8,6 +8,16 @@ spring:
 #    hibernate:
 #      ddl-auto: update
     show-sql: true
+
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username:
+    password:
+    from:
+    protocol: smtps
+    smtps:
+      auth: true
 jwt:
   secret:
     access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==

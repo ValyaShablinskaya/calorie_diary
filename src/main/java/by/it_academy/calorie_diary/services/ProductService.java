@@ -7,7 +7,6 @@ import by.it_academy.calorie_diary.services.api.IProductService;
 import by.it_academy.calorie_diary.services.api.IUserService;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import by.it_academy.calorie_diary.services.dto.product.ProductDTO;
-import by.it_academy.calorie_diary.services.exception.AccessIsDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class ProductService implements IProductService {
     private static final String PRODUCT_NOT_FOUND_EXCEPTION = "Product is not found";
     private static final String PRODUCT_ALREADY_EDITED_EXCEPTION = "Product has been already edited";
     private static final String PRODUCT_ALREADY_DELETED_EXCEPTION = "Product has been already deleted";
-    private static final String ACCESS_USER_DENIED_EXCEPTION = "Current user can not update product";
 
     public ProductService(IProductRepository repository, IProductMapper productMapper, IUserService userService) {
         this.repository = repository;
@@ -37,17 +35,10 @@ public class ProductService implements IProductService {
     @Override
     @Transactional
     public ProductDTO create(ProductDTO item) {
-        Product product = new Product();
+        Product product = productMapper.convertToEntity(item);
         product.setId(UUID.randomUUID());
         product.setDateCrete(LocalDateTime.now());
         product.setDateUpdate(product.getDateCrete());
-        product.setTitle(item.getTitle());
-        product.setFats(item.getFats());
-        product.setCalories(item.getCalories());
-        product.setProteins(item.getProteins());
-        product.setCarbohydrates(item.getCarbohydrates());
-        product.setMeasureOfWeight(item.getMeasureOfWeight());
-        product.setWeight(item.getWeight());
         product.setUser(userService.findCurrentUser());
 
         product = repository.save(product);
@@ -61,10 +52,10 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PageDTO<Product> get(Pageable pageable) {
+    public PageDTO<ProductDTO> get(Pageable pageable) {
         Page<Product> content = repository.findAll(pageable);
 
-        PageDTO<Product> pageDTO = new PageDTO();
+        PageDTO<ProductDTO> pageDTO = new PageDTO();
         pageDTO.setNumber(content.getNumber());
         pageDTO.setSize(content.getSize());
         pageDTO.setTotalPages(content.getTotalPages());
@@ -72,7 +63,7 @@ public class ProductService implements IProductService {
         pageDTO.setFirst(content.isFirst());
         pageDTO.setNumberOfElements(content.getNumberOfElements());
         pageDTO.setLast(content.isLast());
-        pageDTO.setContent(content.getContent());
+        pageDTO.setContent(productMapper.convertToList(content.getContent()));
         return pageDTO;
     }
 
@@ -81,9 +72,6 @@ public class ProductService implements IProductService {
     public ProductDTO update(ProductDTO item, UUID id, LocalDateTime updateData) {
         Product read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
-        if (!read.getUser().equals(userService.findCurrentUser())) {
-            throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
-        }
         if (!read.getDateUpdate().isEqual(updateData)) {
             throw new IllegalArgumentException(PRODUCT_ALREADY_EDITED_EXCEPTION);
         }
@@ -96,7 +84,6 @@ public class ProductService implements IProductService {
         read.setCarbohydrates(item.getCarbohydrates());
         read.setMeasureOfWeight(item.getMeasureOfWeight());
         read.setWeight(item.getWeight());
-        read.setUser(userService.findCurrentUser());
 
         read = repository.save(read);
         return productMapper.convertToDTO(read);

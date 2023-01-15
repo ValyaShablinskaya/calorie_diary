@@ -7,9 +7,7 @@ import by.it_academy.calorie_diary.services.api.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 
 @Component
 public class AuditListener {
@@ -39,7 +37,7 @@ public class AuditListener {
         User user = userService.findCurrentUser();
         audit.setUser(user);
         audit.setText(text);
-        audit.setType(object.getClass().getAnnotation(Auditable.class).type());
+        audit.setType(object.getClass().getAnnotation(AuditableForType.class).type());
         return audit;
     }
 

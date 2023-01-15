@@ -1,6 +1,5 @@
 package by.it_academy.calorie_diary.controllers;
 
-import by.it_academy.calorie_diary.entity.Product;
 import by.it_academy.calorie_diary.services.api.IProductService;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import by.it_academy.calorie_diary.services.dto.product.ProductDTO;
@@ -38,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<Product>> getListOfProduct(Pageable pageable) {
+    protected ResponseEntity<PageDTO<ProductDTO>> getListOfProduct(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 
