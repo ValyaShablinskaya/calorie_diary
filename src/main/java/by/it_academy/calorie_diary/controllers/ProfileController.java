@@ -1,7 +1,7 @@
 package by.it_academy.calorie_diary.controllers;
 
+import by.it_academy.calorie_diary.entity.Profile;
 import by.it_academy.calorie_diary.services.api.IProfileService;
-import by.it_academy.calorie_diary.services.dto.profile.ProfileDTO;
 import by.it_academy.calorie_diary.services.dto.profile.ProfileRequestDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ public class ProfileController {
     }
 
     @PostMapping
-    protected ResponseEntity<ProfileDTO> createProfile(@Valid @RequestBody ProfileRequestDTO data) {
-        ProfileDTO created = this.service.create(data);
+    protected ResponseEntity<Profile> createProfile(@Valid @RequestBody ProfileRequestDTO data) {
+        Profile created = this.service.create(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    protected ResponseEntity<ProfileDTO> get(@PathVariable UUID id) {
+    protected ResponseEntity<Profile> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.read(id));
     }
 }

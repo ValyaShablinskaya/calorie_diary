@@ -10,7 +10,6 @@ import by.it_academy.calorie_diary.services.api.IUserService;
 import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
 import by.it_academy.calorie_diary.services.dto.dish.DishRequestDTO;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
-import by.it_academy.calorie_diary.services.exception.AccessIsDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class DishService implements IDishService {
 
     @Override
     @Transactional
-    public DishDTO create(DishRequestDTO item) {
+    public Dish create(DishRequestDTO item) {
         Dish dish = new Dish();
         dish.setId(UUID.randomUUID());
         dish.setDateCrete(LocalDateTime.now());
@@ -56,20 +55,18 @@ public class DishService implements IDishService {
                                 i.getWeigh(),
                                 productRepository.getById(i.getProduct().getId())))
                 .collect(Collectors.toList()));
-        dish = repository.save(dish);
-        return dishMapper.convertToDTO(dish);
+        return repository.save(dish);
     }
 
     @Override
-    public DishDTO read(UUID id) {
-        Dish dish = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(DISH_NOT_FOUND_EXCEPTION));
-        return  dishMapper.convertToDTO(dish);
+    public Dish read(UUID id) {
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(DISH_NOT_FOUND_EXCEPTION));
     }
 
     @Override
-    public PageDTO<DishDTO> get(Pageable pageable) {
+    public PageDTO<Dish> get(Pageable pageable) {
         Page<Dish> content = repository.findAll(pageable);
-        PageDTO<DishDTO> pageDTO = new PageDTO();
+        PageDTO<Dish> pageDTO = new PageDTO();
         pageDTO.setNumber(content.getNumber());
         pageDTO.setSize(content.getSize());
         pageDTO.setTotalPages(content.getTotalPages());
@@ -77,13 +74,13 @@ public class DishService implements IDishService {
         pageDTO.setFirst(content.isFirst());
         pageDTO.setNumberOfElements(content.getNumberOfElements());
         pageDTO.setLast(content.isLast());
-        pageDTO.setContent(dishMapper.convertToList(content.getContent()));
+        pageDTO.setContent(content.getContent());
         return pageDTO;
     }
 
     @Override
     @Transactional
-    public DishDTO update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
+    public Dish update(DishRequestDTO item, UUID id, LocalDateTime updateData) {
         Dish read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(DISH_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -100,9 +97,7 @@ public class DishService implements IDishService {
                                 productRepository.getById(i.getProduct().getId())))
                 .collect(Collectors.toList()));
 
-        read = repository.save(read);
-
-        return dishMapper.convertToDTO(read);
+        return repository.save(read);
     }
 
     @Override

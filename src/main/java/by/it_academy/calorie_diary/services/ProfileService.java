@@ -33,7 +33,7 @@ public class ProfileService implements IProfileService {
 
     @Override
     @Transactional
-    public ProfileDTO create(ProfileRequestDTO item) {
+    public Profile create(ProfileRequestDTO item) {
         if (isProfileExist()) {
             throw new EntityExistsException(PROFILE_ALREADY_EXIST_EXCEPTION);
         }
@@ -50,19 +50,18 @@ public class ProfileService implements IProfileService {
         profile.setActivityType(item.getActivityType());
         profile.setSex(item.getSex());
 
-        profile = repository.save(profile);
-        return mapper.convertToDTO(profile);
+        return repository.save(profile);
 
     }
 
     @Override
-    public ProfileDTO read(UUID id) {
+    public Profile read(UUID id) {
         UUID currentUserId = userService.findCurrentUser().getId();
         Profile profile = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(PROFILE_NOT_FOUND_EXCEPTION));
         if (!profile.getUser().getId().equals(currentUserId)) {
             throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
         }
-        return  mapper.convertToDTO(profile);
+        return  profile;
     }
 
     private Boolean isProfileExist() {

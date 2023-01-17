@@ -12,9 +12,9 @@ spring:
   mail:
     host: smtp.mail.ru
     port: 465
-    username:
-    password:
-    from:
+    username: valya_shablinskaya@mail.ru
+    password: 8sfrsrYbvYT6Q3DU5M7C
+    from: valya_shablinskaya@mail.ru
     protocol: smtps
     smtps:
       auth: true

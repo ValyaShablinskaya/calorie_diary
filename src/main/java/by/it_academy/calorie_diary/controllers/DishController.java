@@ -1,7 +1,7 @@
 package by.it_academy.calorie_diary.controllers;
 
+import by.it_academy.calorie_diary.entity.Dish;
 import by.it_academy.calorie_diary.services.api.IDishService;
-import by.it_academy.calorie_diary.services.dto.dish.DishDTO;
 import by.it_academy.calorie_diary.services.dto.dish.DishRequestDTO;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import org.springframework.data.domain.Pageable;
@@ -26,18 +26,18 @@ public class DishController {
     }
 
     @PostMapping
-    protected ResponseEntity<DishDTO> createDish(@Valid @RequestBody DishRequestDTO data) {
-        DishDTO created = this.service.create(data);
+    protected ResponseEntity<Dish> createDish(@Valid @RequestBody DishRequestDTO data) {
+        Dish created = this.service.create(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<DishDTO>> getListOfDish(Pageable pageable) {
+    protected ResponseEntity<PageDTO<Dish>> getListOfDish(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 
     @PutMapping("/{id}/update_date/{update_date}")
-    protected ResponseEntity<DishDTO> updateDish(@Valid @PathVariable UUID id,
+    protected ResponseEntity<Dish> updateDish(@Valid @PathVariable UUID id,
                                             @PathVariable("update_date") long updateTime,
                                             @RequestBody DishRequestDTO data) {
 

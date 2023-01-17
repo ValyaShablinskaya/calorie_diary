@@ -34,28 +34,26 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public ProductDTO create(ProductDTO item) {
+    public Product create(ProductDTO item) {
         Product product = productMapper.convertToEntity(item);
         product.setId(UUID.randomUUID());
         product.setDateCrete(LocalDateTime.now());
         product.setDateUpdate(product.getDateCrete());
         product.setUser(userService.findCurrentUser());
 
-        product = repository.save(product);
-        return productMapper.convertToDTO(product);
+        return repository.save(product);
     }
 
     @Override
-    public ProductDTO read(UUID id) {
-        Product product = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
-        return  productMapper.convertToDTO(product);
+    public Product read(UUID id) {
+        return  repository.findById(id).orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
     }
 
     @Override
-    public PageDTO<ProductDTO> get(Pageable pageable) {
+    public PageDTO<Product> get(Pageable pageable) {
         Page<Product> content = repository.findAll(pageable);
 
-        PageDTO<ProductDTO> pageDTO = new PageDTO();
+        PageDTO<Product> pageDTO = new PageDTO();
         pageDTO.setNumber(content.getNumber());
         pageDTO.setSize(content.getSize());
         pageDTO.setTotalPages(content.getTotalPages());
@@ -63,13 +61,13 @@ public class ProductService implements IProductService {
         pageDTO.setFirst(content.isFirst());
         pageDTO.setNumberOfElements(content.getNumberOfElements());
         pageDTO.setLast(content.isLast());
-        pageDTO.setContent(productMapper.convertToList(content.getContent()));
+        pageDTO.setContent(content.getContent());
         return pageDTO;
     }
 
     @Override
     @Transactional
-    public ProductDTO update(ProductDTO item, UUID id, LocalDateTime updateData) {
+    public Product update(ProductDTO item, UUID id, LocalDateTime updateData) {
         Product read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(PRODUCT_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -85,8 +83,7 @@ public class ProductService implements IProductService {
         read.setMeasureOfWeight(item.getMeasureOfWeight());
         read.setWeight(item.getWeight());
 
-        read = repository.save(read);
-        return productMapper.convertToDTO(read);
+        return repository.save(read);
     }
 
     @Override

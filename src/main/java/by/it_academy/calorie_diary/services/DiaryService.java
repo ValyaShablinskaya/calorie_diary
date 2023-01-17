@@ -56,42 +56,41 @@ public class DiaryService implements IDiaryService {
 
     @Override
     @Transactional
-    public DiaryDTO create(DiaryRequestDTO item, UUID uuid_profile) {
+    public Diary create(DiaryRequestDTO item, UUID uuid_profile) {
         if (!findProfileById(uuid_profile).getUser().equals(userService.findCurrentUser())) {
             throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
         }
         Diary diary = populateDiary(item, uuid_profile);
-        diary = repository.save(diary);
-        return diaryMapper.convertToDTO(diary);
+
+        return repository.save(diary);
     }
 
     @Override
-    public DiaryDTO read(UUID id) {
-        Diary diary = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(DIARY_NOT_FOUND_EXCEPTION));
-        return  diaryMapper.convertToDTO(diary);
+    public Diary read(UUID id) {
+        return  repository.findById(id).orElseThrow(() -> new EntityNotFoundException(DIARY_NOT_FOUND_EXCEPTION));
     }
 
     @Override
-    public PageDTO<DiaryDTO> get(Pageable pageable, UUID uuid_profile) {
+    public PageDTO<Diary> get(Pageable pageable, UUID uuid_profile) {
         if (!findProfileById(uuid_profile).getUser().equals(userService.findCurrentUser())) {
             throw new AccessIsDeniedException(ACCESS_USER_DENIED_EXCEPTION);
         }
         Page<Diary> content = repository.findAll(pageable);
-        PageDTO<DiaryDTO> pageDTO = new PageDTO();
-        pageDTO.setNumber(content.getNumber());
-        pageDTO.setSize(content.getSize());
-        pageDTO.setTotalPages(content.getTotalPages());
-        pageDTO.setTotalElements(content.getTotalElements());
-        pageDTO.setFirst(content.isFirst());
-        pageDTO.setNumberOfElements(content.getNumberOfElements());
-        pageDTO.setLast(content.isLast());
-        pageDTO.setContent(diaryMapper.convertToListDTO(content.getContent()));
-        return pageDTO;
+        PageDTO<Diary> page = new PageDTO();
+        page.setNumber(content.getNumber());
+        page.setSize(content.getSize());
+        page.setTotalPages(content.getTotalPages());
+        page.setTotalElements(content.getTotalElements());
+        page.setFirst(content.isFirst());
+        page.setNumberOfElements(content.getNumberOfElements());
+        page.setLast(content.isLast());
+        page.setContent(content.getContent());
+        return page;
     }
 
     @Override
     @Transactional
-    public DiaryDTO update(DiaryRequestDTO item, UUID id, LocalDateTime updateData) {
+    public Diary update(DiaryRequestDTO item, UUID id, LocalDateTime updateData) {
         Diary read = repository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(DIARY_NOT_FOUND_EXCEPTION));
         if (!read.getDateUpdate().isEqual(updateData)) {
@@ -110,8 +109,7 @@ public class DiaryService implements IDiaryService {
             read.setProduct(findProductIsExist(item));
         }
 
-        read = repository.save(read);
-        return diaryMapper.convertToDTO(read);
+        return repository.save(read);
     }
 
     @Override

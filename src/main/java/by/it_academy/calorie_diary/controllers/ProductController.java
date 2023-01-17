@@ -1,5 +1,6 @@
 package by.it_academy.calorie_diary.controllers;
 
+import by.it_academy.calorie_diary.entity.Product;
 import by.it_academy.calorie_diary.services.api.IProductService;
 import by.it_academy.calorie_diary.services.dto.PageDTO;
 import by.it_academy.calorie_diary.services.dto.product.ProductDTO;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -26,23 +28,23 @@ public class ProductController {
     }
 
     @PostMapping
-    protected ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO data) {
-        ProductDTO created = this.service.create(data);
+    protected ResponseEntity<Product> createProduct(@Valid @RequestBody ProductDTO data) {
+        Product created = this.service.create(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    protected ResponseEntity<ProductDTO> get(@PathVariable UUID id) {
+    protected ResponseEntity<Product> get(@PathVariable UUID id) {
         return ResponseEntity.ok(service.read(id));
     }
 
     @GetMapping
-    protected ResponseEntity<PageDTO<ProductDTO>> getListOfProduct(Pageable pageable) {
+    protected ResponseEntity<PageDTO<Product>> getListOfProduct(Pageable pageable) {
         return ResponseEntity.ok(service.get(pageable));
     }
 
     @PutMapping("/{id}/update_date/{update_date}")
-    protected ResponseEntity<ProductDTO> updateProduct(@Valid @PathVariable UUID id,
+    protected ResponseEntity<Product> updateProduct(@Valid @PathVariable UUID id,
                                          @PathVariable("update_date") long updateTime,
                                          @RequestBody ProductDTO data) {
 
